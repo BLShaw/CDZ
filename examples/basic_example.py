@@ -362,9 +362,6 @@ def main():
         metrics = utils.print_info(minimal_dataset, brain, NUM_EXAMPLES)
         utils.print_score(minimal_dataset, brain)
         
-        # Display actual metrics in comparison table
-        display_metrics_table(metrics)
-        
     except Exception as e:
         logger.error(f"Error printing final results: {e}")
         return False
@@ -388,54 +385,7 @@ def main():
     return True
 
 
-def display_metrics_table(metrics):
-    """
-    Display actual metrics in a comparison table format.
-    
-    :param metrics: Dictionary containing all performance metrics
-    """
-    if not metrics:
-        logger.info("No metrics available to display.")
-        return
-    
-    try:
-        # Extract relevant metrics
-        test_visual_avg = metrics.get('test', {}).get('visual', {}).get('avg_score', 0)
-        test_audio_avg = metrics.get('test', {}).get('audio', {}).get('avg_score', 0)
-        
-        # Convert to percentages
-        mnist_accuracy = test_visual_avg * 100
-        fsdd_accuracy = test_audio_avg * 100
-        
-        logger.info("")
-        logger.info("PERFORMANCE COMPARISON TABLE")
-        logger.info("=" * 80)
-        logger.info("{:<45} {:<35} {:<10}".format("Measured On", "Architecture", "Accuracy"))
-        logger.info("-" * 80)
-        logger.info("{:<45} {:<35} {:<10.1f}%".format(
-            "MNIST test encodings", 
-            "Autoencoder + CDZ (unsupervised)", 
-            mnist_accuracy
-        ))
-        logger.info("{:<45} {:<35} {:<10.1f}%".format(
-            "FSDD test encodings", 
-            "Autoencoder + CDZ (unsupervised)", 
-            fsdd_accuracy
-        ))
-        logger.info("{:<45} {:<35} {:<10}".format(
-            "MNIST test encodings", 
-            "2-layer classifier, 32 hidden units (supervised)", 
-            "~96.4%"
-        ))
-        logger.info("{:<45} {:<35} {:<10}".format(
-            "FSDD test encodings", 
-            "2-layer classifier, 32 hidden units (supervised)", 
-            "~100%"
-        ))
-        logger.info("=" * 80)
-        
-    except Exception as e:
-        logger.error(f"Error displaying metrics table: {e}")
+
 
 if __name__ == "__main__":
     success = main()
