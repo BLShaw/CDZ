@@ -316,17 +316,59 @@ if __name__ == '__main__':
             fsdd_encodings = np.load(os.path.join(data_dir, "fsdd_train_encodings.npy"), allow_pickle=True)
             fsdd_labels = np.load(os.path.join(data_dir, "fsdd_train_encodings_labels.npy"), allow_pickle=True)
             
+            print(f"MNIST encodings shape: {mnist_encodings.shape}")
+            print(f"FSDD encodings shape: {fsdd_encodings.shape}")
+            
+            # Check if dimensions match for concatenation
+            if mnist_encodings.shape[1] != fsdd_encodings.shape[1]:
+                print(f"Dimension mismatch: MNIST has {mnist_encodings.shape[1]} features, FSDD has {fsdd_encodings.shape[1]} features")
+                
+                # Use PCA to reduce both to a common dimension (e.g., 64)
+                common_dim = min(64, mnist_encodings.shape[1], fsdd_encodings.shape[1])
+                print(f"Reducing both datasets to {common_dim} dimensions using PCA for cross-modal comparison")
+                
+                from sklearn.decomposition import PCA
+                from sklearn.preprocessing import StandardScaler
+                
+                # Standardize each dataset separately before PCA
+                mnist_scaler = StandardScaler()
+                mnist_normalized = mnist_scaler.fit_transform(mnist_encodings)
+                
+                fsdd_scaler = StandardScaler()
+                fsdd_normalized = fsdd_scaler.fit_transform(fsdd_encodings)
+                
+                # Apply PCA to reduce dimensions
+                mnist_pca = PCA(n_components=common_dim)
+                fsdd_pca = PCA(n_components=common_dim)
+                
+                mnist_reduced = mnist_pca.fit_transform(mnist_normalized)
+                fsdd_reduced = fsdd_pca.fit_transform(fsdd_normalized)
+                
+                print(f"Reduced shapes - MNIST: {mnist_reduced.shape}, FSDD: {fsdd_reduced.shape}")
+                
+                # Now use the reduced datasets
+                encodings_1 = mnist_reduced
+                encodings_2 = fsdd_reduced
+                labels_1 = mnist_labels
+                labels_2 = fsdd_labels
+            else:
+                # Dimensions match, use original datasets
+                encodings_1 = mnist_encodings
+                encodings_2 = fsdd_encodings
+                labels_1 = mnist_labels
+                labels_2 = fsdd_labels
+            
             # Combine for cross-modal visualization
             # Subsample to equal sizes for fair comparison
-            sample_size = min(1000, len(mnist_encodings), len(fsdd_encodings))
-            mnist_subset = mnist_encodings[:sample_size]
-            mnist_labels_subset = mnist_labels[:sample_size]
-            fsdd_subset = fsdd_encodings[:sample_size]
-            fsdd_labels_subset = fsdd_labels[:sample_size]
+            sample_size = min(1000, len(encodings_1), len(encodings_2))
+            enc1_subset = encodings_1[:sample_size]
+            labels_1_subset = labels_1[:sample_size]
+            enc2_subset = encodings_2[:sample_size]
+            labels_2_subset = labels_2[:sample_size]
             
             # Create combined dataset
-            combined_encodings = np.vstack([mnist_subset, fsdd_subset])
-            combined_labels = np.hstack([mnist_labels_subset, fsdd_labels_subset])
+            combined_encodings = np.vstack([enc1_subset, enc2_subset])
+            combined_labels = np.hstack([labels_1_subset, labels_2_subset])
             modality_labels = np.hstack([np.full(sample_size, 0), np.full(sample_size, 1)])  # 0=MNIST, 1=FSDD
             
             # Normalize combined data
@@ -389,3 +431,5 @@ if __name__ == '__main__':
             
         except Exception as e:
             print(f"Error in cross-modal visualization: {e}")
+            import traceback
+            traceback.print_exc()
