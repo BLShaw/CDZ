@@ -1,61 +1,37 @@
-# Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual environments
-venv/
-env/
-ENV/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Data files (too large for git)
-/data/*.npy
-/data/**/*.npy
-/data/Visualizations/
-/data/*encodings*
-
-# Logs
-*.log
-
-# Checkpoints
-.ipynb_checkpoints/
-*.ipynb_checkpoints/
-
-# Build artifacts
-CDZ.egg-info/
 *.pyc
 *.pyo
-
-# Local environment
-.env
-
-# Colab specific
-/content/
+*.pyd
+.Python
+env/
+venv/
+.venv/
+*/bin/activate
+*/Scripts/activate
+*.egg-info/
+.tox/
+.coverage
+.pytest_cache/
+htmlcov/
+.mypy_cache/
+.dmypy.json
+.vscode/
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.bak
+*.swp
+*~
+.idea/
+.project
+.settings
+.factorypath
+.classpath
+.project
+.pydevproject
+.cache/
+.ipynb_checkpoints/
