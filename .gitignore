@@ -3,6 +3,9 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
+*.png
+*.gz
+*ubyte
 env/
 venv/
 .venv/
